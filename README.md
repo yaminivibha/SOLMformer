@@ -39,7 +39,8 @@ The following train/eval instructions assume that the file data/{dataset-name}.x
 
 ### Baseline Train/Eval
 Run the command
-```python train/baseline.py --dataset-name={dataset-name}
+```
+python train/baseline.py --dataset-name={dataset-name}
 ```
 ### S-former Train/Eval
 
