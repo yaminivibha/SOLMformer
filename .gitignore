@@ -1,0 +1,4 @@
+*.xes
+*.pt
+.DS_Store
+__pycache__

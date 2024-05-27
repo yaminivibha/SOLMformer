@@ -1,0 +1,10 @@
+lxml==5.1.0
+matplotlib==3.8.3
+matplotlib-inline==0.1.6
+numpy==1.26.3
+pandas==1.5.3
+torch==2.2.0
+torchdata==0.7.1
+torchtext==0.17.0
+transformers==4.37.2
+tqdm==4.66.1
