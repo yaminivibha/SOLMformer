@@ -44,33 +44,23 @@ python train/baseline.py --dataset-name={dataset-name}
 ```
 ### S-former Train/Eval
 
-```python train/baseline.py
---include-metadata
---dataset-name={dataset-name}
+```python train/baseline.py --include-metadata --dataset-name={dataset-name}
 ```
 ### SOLMformer-1T Train/Eval
 
 #### 1T-Next Activity
 ```
 python train/solmformer.py
---logits_weight=1.0
---durations_weight=0.0
---dataset-name={dataset-name}
+--logits_weight=1.0 --durations_weight=0.0 --dataset-name={dataset-name}
 ```
 #### 1T-Next Duration
 ```
-python train/solmformer.py
---logits_weight=0.0
---durations_weight=1.0
---dataset-name={dataset-name}
+python train/solmformer.py --logits_weight=0.0 --durations_weight=1.0 --dataset-name={dataset-name}
 ```
 
 #### 1T-Time Remaining
 ```
-python train/solmformer.py
---logits_weight=0.0
---durations_weight=0.0
---dataset-name={dataset-name}
+python train/solmformer.py --logits_weight=0.0 --durations_weight=0.0 --dataset-name={dataset-name}
 ```
 
 ### SOLMformfer Train/Eval
@@ -80,5 +70,3 @@ python train/solmformer.py
 --durations_weight={w2}
 --dataset-name={dataset-name}
 ```
-
-Select weights that are appropriate to the given dataset as shown in the paper. 

@@ -4,7 +4,7 @@ from tqdm import tqdm
 from torch.nn import functional as F
 from matplotlib import pyplot as plt
 class Evaluator():
-    def __init__(self, dataset:torch.utils.data.Dataset, test_dataloader:torch.utils.data.Dataloader, model:torch.nn.Module, device:str,) -> None:
+    def __init__(self, dataset:torch.utils.data.Dataset, test_dataloader:torch.utils.data.DataLoader, model:torch.nn.Module, device:str,) -> None:
         """
         Evaluator class for evaluating the performance of the SOLM model & baselines
 

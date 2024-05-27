@@ -7,14 +7,14 @@ import math
 import matplotlib.pyplot as plt
 import torch
 from torch.nn import functional as F
-from torch.utils.data import DataLoader, Subset
+from torch.utils.data import DataLoader
 from torch.utils.data import random_split
 from tqdm import tqdm
-import numpy as np
 from utils.Evaluator import Evaluator
 from utils.BPIDataset import load_bpi_dataset
 from models.model import SOLMformer
-
+import warnings
+warnings.filterwarnings("ignore")
 # Taking command line arguments
 parser = argparse.ArgumentParser(description="Train a GPT model with or without metadata on the invoice or BPI dataset.")
 parser.add_argument(
@@ -28,11 +28,8 @@ parser.add_argument("--logits-weight", default=0.33, type=float, help="Weight fo
 parser.add_argument("--durations-weight", default=0.33, type=float, help="Weight for the durations loss")
 
 args = parser.parse_args()
-dataset = args.dataset 
 logits_weight = args.logits_weight
 durations_weight = args.durations_weight
-if dataset == "bpi" and args.dataset_name:
-    dataset = args.dataset_name
 
 # hyperparameters
 n_epochs = args.n_epochs
@@ -60,7 +57,7 @@ dropout = 0.1
 current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 use_weights = False
 
-model_dir = f"models/{dataset}_SOLMFORMER_logits_{logits_weight}_durations_{durations_weight}{current_time}"
+model_dir = f"models/{args.dataset_name}_SOLMFORMER_logits_{logits_weight}_durations_{durations_weight}{current_time}"
 os.mkdir(model_dir)
 model_filename = f"{model_dir}/model.pt"
 
@@ -73,7 +70,7 @@ else:
 
 print(f"Using device: {device}")
 
-data = load_bpi_dataset(dataset)
+data = load_bpi_dataset(args.dataset_name, total_duration=True)
 # Define the sizes for train, validation, and test sets
 train_size = int(0.8 * len(data))
 val_size = int(0.1 * len(data))
@@ -122,7 +119,7 @@ model_params = {
     "train_size": train_size,
     "val_size": val_size,
     "test_size": test_size,
-    'dataset': dataset,
+    'dataset': args.dataset_name,
     'use_weights': use_weights,
     'duration_embd': duration_embd,
     'alpha': logits_weight,
@@ -131,7 +128,7 @@ model_params = {
 torch.save(model_params, f"{model_dir}/model_params.pt")
 
 print("=========================================")
-print(f"Config:\n Dataset:{dataset}\n Use Weights: {use_weights}\n")
+print(f"Config:\n Dataset:{args.dataset_name}\n Use Weights: {use_weights}\n")
 print(f"Device: {device}\nMax sequence length: {data.max_sequence_length}\nVocabulary size: {data.activity_vocab_size}")
 print("Initialized model, parameters: ", sum(p.numel() for p in model.parameters() if p.requires_grad)/1e6, "M parameters ...")
 print("# iterations per epoch:", len(train_dataloader))
@@ -266,11 +263,6 @@ torch.save(model.state_dict(), model_filename)
 print(f"Saved model to `{model_filename}`")
 torch.save(optimizer.state_dict(), f"{model_dir}/optimizer.pt")
 torch.save(scheduler.state_dict(), f"{model_dir}/scheduler.pt")
-# Define the source files and the destination directory
-source_files =['scripts/train.py','models/gpt.py','models/model.py']
-
-for source_file in source_files:
-    shutil.copy(source_file, model_dir)
 
 new_model = SOLMformer(
     numerical_metadata_dim=model_params['numerical_metadata_dim'],
